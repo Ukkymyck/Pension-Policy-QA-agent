@@ -1,14 +1,7 @@
-// ===================== 配置区（部署前按需修改） =====================
-const API_BASE = '';          // 同源部署（server 托管 web）留空；前后端分离时填 https://你的后端域名
-const TOKEN = 'demo-token-123'; // 演示 token；上线前换成你登录体系签发的真实 token
-
-// 你的 Dify 应用类型（决定走哪个接口）：
-//   'chat'     = 聊天助手 / Chatflow → 走 /api/chat（回答在 data.answer）
-//   'workflow' = 纯工作流            → 走 /api/workflow（把问题放进 inputs，结果在 outputs）
-const APP_MODE = 'chat';
-const APP_INPUT_KEY = 'query'; // workflow 模式：用户问题写入 inputs 的哪个字段（改成你 Dify 里的输入变量名）
-const APP_OUTPUT_KEY = '';     // workflow 模式：输出变量名（留空 = 显示整个 outputs JSON）
-// ====================================================================
+// ===================== 配置区 =====================
+const API_BASE = '';              // 同源部署留空；前后端分离时填 https://你的后端域名
+const TOKEN = 'demo-token-123';   // 演示 token；上线前换成真实鉴权 token
+// ==================================================
 
 let conversationId = '';
 let sending = false;
@@ -22,23 +15,7 @@ const convMetaEl = document.getElementById('convMeta');
 // 回车发送
 inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
 
-/* ================================================================
-   插件说明
-   ---------------------------------------------------------------
-   DOMPurify (purify.min.js)
-     — HTML 安全净化库，对 marked 渲染后的 HTML 做 XSS 过滤，
-       自动移除 <script>、事件属性（on*）、危险标签等攻击向量。
-       比手写正则更全面可靠，OWASP 推荐方案。
-
-   marked (marked.min.js)
-     — Markdown → HTML 渲染引擎，将 AI 回答中的 **加粗**、
-       列表、标题、代码块等 Markdown 语法转为结构化 HTML。
-
-   highlight.js (hljs/highlight.min.js)
-     — 代码语法高亮库，自动识别代码块语言（200+ 种），
-       对关键字、字符串、注释等着色，让代码块专业美观。
-       主题：github.min.css（GitHub 风格，浅色背景）
-   ================================================================ */
+/* 渲染管线：polishMarkdown → marked → DOMPurify → hljs → 表格竖排 */
 
 /* ========== 工具函数 ========== */
 
@@ -261,26 +238,14 @@ async function send() {
   btnSend.disabled = true;
 
   try {
-    var answer;
-    if (APP_MODE === 'workflow') {
-      var data = await callApi('/api/workflow', {
-        inputs: (function () { var o = {}; o[APP_INPUT_KEY] = text; return o; })(),
-        user: 'web-user-001',
-      });
-      var outputs = (data.data && data.data.outputs) ? data.data.outputs : (data.outputs || {});
-      answer = APP_OUTPUT_KEY
-        ? (outputs[APP_OUTPUT_KEY] || '（outputs 中没有「' + APP_OUTPUT_KEY + '」字段，实际：' + JSON.stringify(outputs) + '）')
-        : JSON.stringify(outputs, null, 2);
-    } else {
-      var data = await callApi('/api/chat', {
-        query: text,
-        conversation_id: conversationId,
-        user: 'web-user-001',
-      });
-      answer = data.answer;
-      conversationId = data.conversation_id || '';
-      convMetaEl.textContent = 'conversation_id: ' + (conversationId || '暂无');
-    }
+    var data = await callApi('/api/chat', {
+      query: text,
+      conversation_id: conversationId,
+      user: 'web-user-001',
+    });
+    var answer = data.answer;
+    conversationId = data.conversation_id || '';
+    convMetaEl.textContent = 'conversation_id: ' + (conversationId || '暂无');
     typing.className = 'msg assistant';
     setAnswer(typing, answer);
   } catch (err) {

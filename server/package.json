@@ -1,19 +1,21 @@
 {
   "name": "dify-relay-server",
   "version": "1.0.0",
-  "description": "Dify Workflow API 中转服务：保护 API Secret，供网页 / 微信小程序调用",
+  "description": "上海市养老政策问答：Node.js 中转服务，保护 Dify API Secret",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
   "dependencies": {
-    "@highlightjs/cdn-assets": "^11.11.1",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
-    "dompurify": "^3.4.12",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "dompurify": "^3.4.12",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.7"
   }
