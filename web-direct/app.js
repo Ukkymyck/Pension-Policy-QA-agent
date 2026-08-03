@@ -2,11 +2,11 @@
 // ⚠️ 直连版：无后端中转，浏览器直接调 Dify API
 // 1. DIFY_BASE_URL：你的 Dify 公网地址（内网穿透后获得），必须以 /v1 结尾
 //    例：https://xxxx.ngrok-free.app/v1 或 https://api.dify.ai/v1（云版）
-const DIFY_BASE_URL = 'https://你的穿透地址.ngrok-free.app/v1';
+const DIFY_BASE_URL = 'https://3b375e2a.r33.cpolar.top/v1';
 
 // 2. DIFY_API_KEY：Dify「访问 API」页面的 API Secret（app- 开头）
 //    ⚠️ 此密钥会暴露在公开代码中，仅供个人演示使用
-const DIFY_API_KEY = 'app-你的密钥';
+const DIFY_API_KEY = 'app-fspfek2TonqCRqep5wMWkkZo';
 // =================================================================
 
 let conversationId = '';
